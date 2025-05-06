@@ -13,8 +13,7 @@ jobs:
 
     env:
       AWS_REGION: us-east-1
-      STACK_NAME: upload-api-dev
-
+      STACK_NAME: danielDevOps
 
     steps:
     - name: Checkout repo
@@ -26,7 +25,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.DEV_REGIONN }}
+        aws-region: ${{ env.AWS_REGION }}
 
 
     - name: Set up SAM CLI
