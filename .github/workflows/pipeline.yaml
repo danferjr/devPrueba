@@ -13,7 +13,7 @@ jobs:
 
     env:
       AWS_REGION: us-east-1
-      STACK_NAME: danielDevOps
+      STACK_NAME: danieldevps
 
     steps:
     - name: Checkout repo
