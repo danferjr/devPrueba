@@ -71,6 +71,22 @@ Resources:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${FrontendDistribution}"
 
 
+UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "UploadFileFunction-${AWS::StackName}"
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      CodeUri: backend/
+      MemorySize: 128
+      Timeout: 5
+      Events:
+        UploadEndpoint:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: post
+
 Outputs:
   FrontendURL:
     Description: "URL pública del frontend"
