@@ -46,3 +46,7 @@ jobs:
           --capabilities CAPABILITY_IAM \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset
+
+    - name: Upload frontend to S3
+          run: |
+            aws s3 sync Frontend/ s3://$BUCKET_NAME --delete
