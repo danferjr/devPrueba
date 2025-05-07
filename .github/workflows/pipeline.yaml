@@ -20,6 +20,10 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Install Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
 
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -42,6 +46,7 @@ jobs:
     - name: SAM Deploy
       run: |
         sam deploy \
+          --resolve-s3 \
           --stack-name ${STACK_NAME} \
           --region ${AWS_REGION} \
           --capabilities CAPABILITY_IAM \
