@@ -14,6 +14,7 @@ jobs:
     env:
       AWS_REGION: us-east-1
       STACK_NAME: danieldevps
+      BUCKET_NAME: frontend-static-danieldevps-us-east-1
 
     steps:
     - name: Checkout repo
