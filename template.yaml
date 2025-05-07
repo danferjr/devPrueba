@@ -81,54 +81,6 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  MyVPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: MyPrivateVPC
-
-
-  MySubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: 10.0.1.0/24
-      AvailabilityZone: !Select [ 0, !GetAZs "" ]
-      Tags:
-        - Key: Name
-          Value: MyPrivateSubnet
-
-
-  RouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref MyVPC
-
-
-  SubnetRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref MySubnet
-      RouteTableId: !Ref RouteTable
-
-
-  LambdaSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Acceso para la Lambda
-      VpcId: !Ref MyVPC
-
-
-
-  UploadBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub 'uploads-bucket-${AWS::StackName}-${AWS::Region}'
-
 
   UploadFunction:
     Type: AWS::Serverless::Function
@@ -139,6 +91,11 @@ Resources:
       CodeUri: backend/
       MemorySize: 128
       Timeout: 10
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0dc3a236c2412505b  
+        SubnetIds:
+          - subnet-0a465fb262395b8a7
       Environment:
         Variables:
           BUCKET_NAME: !Ref UploadBucket
@@ -154,9 +111,6 @@ Resources:
           Properties:
             Path: /upload
             Method: post
-
-
-
 
 
 Outputs:
