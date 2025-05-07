@@ -69,6 +69,49 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${FrontendDistribution}"
+  UploadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "Uploadstable-${AWS::StackName}"
+      AttributeDefinitions:
+        - AttributeName: filename
+          AttributeType: S
+      KeySchema:
+        - AttributeName: filename
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'uploads-bucket-${AWS::StackName}-${AWS::Region}'
+
+
+  UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "UploadFileFunction-${AWS::StackName}"
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      CodeUri: backend/
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref UploadBucket
+          TABLE_NAME: !Ref UploadsTable
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref UploadBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UploadsTable
+      Events:
+        UploadEndpoint:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: post
 
 
   UploadFunction:
@@ -86,6 +129,8 @@ Resources:
             Properties:
               Path: /upload
               Method: post
+
+              
 
 Outputs:
   FrontendURL:
